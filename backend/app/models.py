@@ -48,12 +48,18 @@ class DBRole(Base):
 class DBProduct(Base):
     __tablename__: str = "products"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
     category = Column(String, index=True)
     description = Column(String)
     price = Column(Float, index=True)
-    stock = Column(Float)
+    stock = Column(Integer)
+    calories = Column(Float, nullable=True)
+    carbs = Column(Float, nullable=True)
+    sugar = Column(Float, nullable=True)
+    protein = Column(Float, nullable=True)
+    fat = Column(Float, nullable=True)
+    image_url = Column(String, nullable=True)
 
 
 class DBOrder(Base):
@@ -72,6 +78,8 @@ class DBOrder(Base):
 
 
 class DBOrderItem(Base):
+    __tablename__: str = "order_items"
+
     id = Column(Integer, primary_key=True, index=True)
     order_id = Column(
         Integer,
@@ -79,7 +87,7 @@ class DBOrderItem(Base):
         unique=True,
         nullable=False,
     )
-    product_id = Column(Integer, ForeignKey("products.id"), unique=True, nullable=False)
+    product_id = Column(String, ForeignKey("products.id"), unique=True, nullable=False)
     quantity = Column(Float)
     price_at_purchase = Column(Float)
 

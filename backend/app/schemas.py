@@ -21,20 +21,32 @@ class UserCreate(BaseModel):
 
 
 class Product(BaseModel):
-    id: int
+    id: str
     name: str
     category: str
     description: str
     price: float
-    stock: float
+    stock: int
+    calories: Optional[float] = None
+    carbs: Optional[float] = None
+    sugar: Optional[float] = None
+    protein: Optional[float] = None
+    fat: Optional[float] = None
+    image_url: Optional[str] = None
 
     class Config:
         from_attributes = True
 
 
-class ProductCreatee(BaseModel):
+class ProductCreate(BaseModel):
     name: str
     category: str
     description: str
     price: float
-    stock: float
+    stock: int
+    calories: Optional[float] = None
+    carbs: Optional[float] = None
+    sugar: Optional[float] = None
+    protein: Optional[float] = None
+    fat: Optional[float] = None
+    image_url: Optional[str] = None
