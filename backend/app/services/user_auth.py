@@ -1,7 +1,8 @@
 import os
 from datetime import datetime, timedelta, timezone
-from typing import Any, Optional, Annotated
+from typing import Annotated, Any, Optional
 
+from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -10,13 +11,12 @@ from sqlalchemy.orm import Session
 from starlette.status import HTTP_404_NOT_FOUND
 
 from ..crud import authenticate_user, get_user_by_username
-from ..database import DBUser, get_db
-from ..models import User
-from dotenv import load_dotenv
+from ..database import get_db
+from ..schemas import User
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = str(os.getenv("SECRET_KEY"))
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY environment variable is not set")
 
