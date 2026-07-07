@@ -10,9 +10,11 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_404_NOT_FOUND
 
-from ..crud import authenticate_user, get_user_by_username
 from ..database import get_db
+from ..exceptions import AppException
 from ..schemas import User
+from ..utils import UserRole
+from .user_crud import authenticate_user, get_user_by_username
 
 load_dotenv()
 
@@ -94,3 +96,15 @@ def create_access_token(data: dict[str, Any], expire_delta: Optional[timedelta] 
 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+
+def require_role(allowed_roles: list[UserRole]):
+    def role_checker(current_user: Annotated[User, Depends(get_current_active_user)]):
+        if not any(role.name in allowed_roles for role in current_user.roles):
+            raise AppException(
+                f"Requires one of roles: {[r.value for r in allowed_roles]}",
+                status.HTTP_403_FORBIDDEN,
+            )
+        return current_user
+
+    return role_checker
