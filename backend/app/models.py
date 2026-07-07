@@ -1,15 +1,19 @@
+import uuid
+from datetime import datetime
+from decimal import Decimal
+
 from sqlalchemy import (
     Boolean,
     Column,
     DateTime,
-    Float,
     ForeignKey,
     Integer,
+    Numeric,
     String,
     Table,
     func,
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .database import Base
 
@@ -38,9 +42,9 @@ class DBUser(Base):
 class DBRole(Base):
     __tablename__: str = "roles"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
-    description = Column(String)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, unique=True, index=True)
+    description: Mapped[str] = mapped_column(String)
 
     users = relationship("DBUser", secondary=user_roles, back_populates="roles")
 
@@ -48,47 +52,51 @@ class DBRole(Base):
 class DBProduct(Base):
     __tablename__: str = "products"
 
-    id = Column(String, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
-    category = Column(String, index=True)
-    description = Column(String)
-    price = Column(Float, index=True)
-    stock = Column(Integer)
-    calories = Column(Float, nullable=True)
-    carbs = Column(Float, nullable=True)
-    sugar = Column(Float, nullable=True)
-    protein = Column(Float, nullable=True)
-    fat = Column(Float, nullable=True)
-    image_url = Column(String, nullable=True)
+    id: Mapped[str] = mapped_column(
+        String, primary_key=True, index=True, default=uuid.uuid4
+    )
+    name: Mapped[str] = mapped_column(String, unique=True, index=True)
+    category: Mapped[str] = mapped_column(String, index=True)
+    description: Mapped[str] = mapped_column(String)
+    price: Mapped[Decimal] = mapped_column(Numeric, index=True)
+    stock: Mapped[int] = mapped_column(Integer)
+    calories: Mapped[Decimal] = mapped_column(Numeric, nullable=True)
+    carbs: Mapped[Decimal] = mapped_column(Numeric, nullable=True)
+    sugar: Mapped[Decimal] = mapped_column(Numeric, nullable=True)
+    protein: Mapped[Decimal] = mapped_column(Numeric, nullable=True)
+    fat: Mapped[Decimal] = mapped_column(Numeric, nullable=True)
+    image_url: Mapped[str] = mapped_column(String, nullable=True)
 
 
 class DBOrder(Base):
     __tablename__: str = "orders"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(
-        Integer, ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    total_price = Column(Float)
-    status = Column(String, index=True)
-    created_at = Column(DateTime, default=func.now())
+    total_price: Mapped[Decimal] = mapped_column(Numeric)
+    status: Mapped[str] = mapped_column(String, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
 
     user = relationship("DBUser")
-    items = relationship("DBOrderItem")
+    items = relationship("DBOrderItem", back_populates="order")
 
 
 class DBOrderItem(Base):
     __tablename__: str = "order_items"
 
-    id = Column(Integer, primary_key=True, index=True)
-    order_id = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    order_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("orders.id", ondelete="CASCADE"),
-        unique=True,
         nullable=False,
     )
-    product_id = Column(String, ForeignKey("products.id"), unique=True, nullable=False)
-    quantity = Column(Float)
-    price_at_purchase = Column(Float)
+    product_id: Mapped[str] = mapped_column(
+        String, ForeignKey("products.id"), nullable=False
+    )
+    quantity: Mapped[Decimal] = mapped_column(Numeric)
+    price_at_purchase: Mapped[Decimal] = mapped_column(Numeric)
 
     product = relationship("DBProduct")
+    order = relationship("DBOrder", back_populates="items")
