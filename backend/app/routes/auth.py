@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from ..crud import create_user
 from ..database import get_db
 from ..schemas import User, UserCreate
 from ..services.user_auth import (
@@ -13,6 +12,7 @@ from ..services.user_auth import (
     create_access_token,
     login_user,
 )
+from ..services.user_crud import create_user
 
 DBSession = Annotated[Session, Depends(get_db)]
 
@@ -43,7 +43,8 @@ async def login_for_accesstoken(
     access_token_expire = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
     access_token = create_access_token(
-        data={"sub": form_data.username}, expire_delta=access_token_expire
+        data={"sub": form_data.username},
+        expire_delta=access_token_expire,
     )
 
     return {"access_token": access_token, "token_type": "Bearer"}
