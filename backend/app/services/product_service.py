@@ -56,7 +56,7 @@ def create_product(db: Session, product: ProductCreate):
         price=product.price,
         stock=product.stock,
         calories=product.calories,
-        carbs=product.calories,
+        carbs=product.carbs,
         sugar=product.sugar,
         protein=product.protein,
         fat=product.fat,
