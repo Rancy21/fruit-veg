@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { Search, ShoppingBasket, Leaf, ChevronRight, Star, Truck, Shield, RefreshCw, Heart } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
+import AvatarDropdown from "../components/AvatarDropdown";
 
 const HERO_IMG = "https://images.unsplash.com/photo-1557844352-761f2565b576?w=1600&h=900&fit=crop&auto=format";
 const STAND_IMG = "https://images.unsplash.com/photo-1604200657090-ae45994b2451?w=800&h=1000&fit=crop&auto=format";
@@ -151,22 +152,13 @@ export default function HomePage() {
         <div className="flex items-center gap-6">
           <Link to="/products" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Shop</Link>
           <Link to="/search" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Search</Link>
-          <Link to="/orders" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Orders</Link>
-          {isAuthenticated && (
-            <Link to="/profile" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Profile</Link>
-          )}
           {isAdmin && (
             <Link to="/admin" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors font-semibold">Admin Dashboard</Link>
           )}
           <span className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Origins</span>
           <span className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Journal</span>
           {isAuthenticated ? (
-            <button
-              onClick={logout}
-              className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
-            >
-              Logout
-            </button>
+            <AvatarDropdown />
           ) : (
             <Link to="/login" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
               Login
