@@ -3,14 +3,24 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 
 from ..routes.auth import DBSession
-from ..schemas import OrderResponse
+from ..schemas import OrderResponse, User
 from ..services.order_service import admin_cancel_order, get_order_by_id, list_all_orders, list_order_items
 from ..services.user_auth import require_role
+from ..services.user_crud import get_all_users
 from ..utils import UserRole
 
 AdminUser = Annotated[dict, Depends(require_role([UserRole.ADMIN]))]
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
+
+
+@router.get("/users", response_model=list[User])
+async def admin_list_users(
+    db: DBSession, current_user: AdminUser
+):
+    """List all users (admin only)"""
+    users = get_all_users(db)
+    return users
 
 
 @router.get("/orders", response_model=list[OrderResponse])
