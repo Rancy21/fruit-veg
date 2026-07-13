@@ -22,6 +22,19 @@ export type UserCreate = {
   location?: string;
 };
 
+export type UserUpdate = {
+  username?: string;
+  email?: string;
+  full_name?: string;
+  phone_number?: string;
+  location?: string;
+};
+
+export type PasswordChange = {
+  current_password: string;
+  new_password: string;
+};
+
 export type Product = {
   id: string;
   name: string;

@@ -152,6 +152,9 @@ export default function HomePage() {
           <Link to="/products" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Shop</Link>
           <Link to="/search" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Search</Link>
           <Link to="/orders" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Orders</Link>
+          {isAuthenticated && (
+            <Link to="/profile" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Profile</Link>
+          )}
           {isAdmin && (
             <Link to="/admin/products" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Admin</Link>
           )}

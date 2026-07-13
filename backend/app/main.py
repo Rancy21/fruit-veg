@@ -13,8 +13,9 @@ from .database import Base, engine
 from .exceptions import AppException
 from .routes import auth, order, product
 from .routes.auth import DBSession
-from .schemas import OrderResponse, User
+from .schemas import OrderResponse, PasswordChange, User, UserUpdate
 from .services.order_service import list_orders_by_user
+from .services.user_crud import change_password, update_user
 from .services.user_auth import require_role
 from .utils import UserRole, UUIDConvertor
 
@@ -45,6 +46,23 @@ async def root():
 async def read_users_me(current_user: CurrentUser):
     """Get current active user"""
     return current_user
+
+
+@app.patch("/users/me", response_model=User)
+async def update_users_me(
+    db: DBSession, data: UserUpdate, current_user: CurrentUser
+):
+    """Update current user's profile information"""
+    return update_user(db, current_user.id, data)
+
+
+@app.patch("/users/me/password")
+async def update_users_password(
+    db: DBSession, data: PasswordChange, current_user: CurrentUser
+):
+    """Change current user's password"""
+    change_password(db, current_user.id, data)
+    return {"message": "Password updated successfully"}
 
 
 @app.get("/users/me/orders", response_model=list[OrderResponse])

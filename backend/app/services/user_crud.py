@@ -5,7 +5,7 @@ from starlette import status
 
 from ..exceptions import AppException
 from ..models import DBRole, DBUser
-from ..schemas import UserCreate
+from ..schemas import PasswordChange, UserCreate, UserUpdate
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -101,3 +101,49 @@ def get_user_roles(db: Session, username: str) -> list[DBRole]:
         raise AppException(f"User: {username} not found", status.HTTP_404_NOT_FOUND)
 
     return db_user.roles
+
+
+def update_user(db: Session, user_id: int, data: UserUpdate):
+    db_user = get_user_by_id(db, user_id)
+
+    if not db_user:
+        raise AppException(
+            f"user with id: {user_id} not found", status.HTTP_404_NOT_FOUND
+        )
+
+    update_data = data.model_dump(exclude_unset=True)
+
+    if "username" in update_data and update_data["username"] != db_user.username:
+        if get_user_by_username(db, update_data["username"]):
+            raise AppException("Username already registered", status.HTTP_409_CONFLICT)
+
+    if "email" in update_data and update_data["email"] != db_user.email:
+        if get_user_by_email(db, update_data["email"]):
+            raise AppException("Email already registered", status.HTTP_409_CONFLICT)
+
+    for key, value in update_data.items():
+        setattr(db_user, key, value)
+
+    db.commit()
+    db.refresh(db_user)
+
+    return db_user
+
+
+def change_password(db: Session, user_id: int, data: PasswordChange):
+    db_user = get_user_by_id(db, user_id)
+
+    if not db_user:
+        raise AppException(
+            f"user with id: {user_id} not found", status.HTTP_404_NOT_FOUND
+        )
+
+    if not pwd_context.verify(data.current_password, db_user.hashed_password):
+        raise AppException("Current password is incorrect", status.HTTP_401_UNAUTHORIZED)
+
+    db_user.hashed_password = pwd_context.hash(data.new_password)
+
+    db.commit()
+    db.refresh(db_user)
+
+    return db_user

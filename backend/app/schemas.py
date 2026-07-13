@@ -38,6 +38,19 @@ class UserCreate(BaseModel):
     location: Optional[str] = None
 
 
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    phone_number: Optional[str] = None
+    location: Optional[str] = None
+
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+
 class Product(BaseModel):
     id: str
     name: str
