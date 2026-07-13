@@ -41,6 +41,10 @@ def list_orders_by_user(db: Session, user_id: int, skip: int, limit: int):
     )
 
 
+def list_all_orders(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(DBOrder).offset(skip).limit(limit).all()
+
+
 def list_order_items(db: Session, order_id: int):
     return db.query(DBOrderItem).filter(DBOrderItem.order_id == order_id).all()
 
@@ -69,6 +73,22 @@ def cancel_order(db: Session, order_id: int, user_id: int):
             f"Cannot cancel order: {order_id}. The order has been completed",
             status.HTTP_409_CONFLICT,
         )
+    db_order.status = OrderStatus.CANCELLED
+
+    db.commit()
+    db.refresh(db_order)
+    return db_order
+
+
+def admin_cancel_order(db: Session, order_id: int):
+    db_order = get_order_by_id(db, order_id)
+
+    if db_order.status == OrderStatus.COMPLETED:
+        raise AppException(
+            f"Cannot cancel order: {order_id}. The order has been completed",
+            status.HTTP_409_CONFLICT,
+        )
+
     db_order.status = OrderStatus.CANCELLED
 
     db.commit()
