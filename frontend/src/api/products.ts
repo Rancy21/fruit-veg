@@ -37,6 +37,14 @@ export async function createProduct(product: ProductCreate): Promise<Product> {
   return response.data;
 }
 
+export async function updateProduct(
+  id: string,
+  product: ProductCreate
+): Promise<Product> {
+  const response = await api.put<Product>(`/products/${id}`, product);
+  return response.data;
+}
+
 export async function deleteProduct(id: string): Promise<void> {
   await api.delete(`/products/${id}`);
 }
