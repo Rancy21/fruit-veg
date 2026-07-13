@@ -25,7 +25,7 @@ router = APIRouter(prefix="/products")
 
 
 @router.get("/{product_id:uuid}", response_model=Product)
-async def read_product_by_id(db: DBSession, product_id: UUID, current_user: AdminUser):
+async def read_product_by_id(db: DBSession, product_id: UUID, current_user: CurrentUser):
     product = get_product_by_id(db, product_id)
 
     if not product:
