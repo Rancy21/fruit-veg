@@ -10,3 +10,4 @@ alembic
 psycopg2-binary
 requests
 httpx
+openai
