@@ -75,6 +75,7 @@ class OrderItemCreate(BaseModel):
 
 
 class OrderResponse(BaseModel):
+    id: int
     user_name: str
     total_price: Decimal
     status: str
@@ -87,3 +88,6 @@ class OrderItem(BaseModel):
     product_name: str
     quantity: Decimal
     price_at_purchase: Decimal
+
+class SearchRequest(BaseModel):
+    query:str
