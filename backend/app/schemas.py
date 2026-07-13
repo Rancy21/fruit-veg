@@ -19,6 +19,8 @@ class User(BaseModel):
     username: str
     full_name: Optional[str] = None
     email: Optional[str] = None
+    phone_number: Optional[str] = None
+    location: Optional[str] = None
     disabled: Optional[bool] = None
 
     roles: list[UserRole]
@@ -32,6 +34,8 @@ class UserCreate(BaseModel):
     email: str
     full_name: str
     password: str
+    phone_number: Optional[str] = None
+    location: Optional[str] = None
 
 
 class Product(BaseModel):

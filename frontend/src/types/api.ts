@@ -7,6 +7,8 @@ export type User = {
   username: string;
   full_name?: string;
   email?: string;
+  phone_number?: string;
+  location?: string;
   disabled?: boolean;
   roles: UserRole[];
 };
@@ -16,6 +18,8 @@ export type UserCreate = {
   email: string;
   full_name: string;
   password: string;
+  phone_number?: string;
+  location?: string;
 };
 
 export type Product = {

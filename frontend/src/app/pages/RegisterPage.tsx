@@ -12,6 +12,8 @@ export default function RegisterPage() {
     username: "",
     email: "",
     full_name: "",
+    phone_number: "",
+    location: "",
     password: "",
     confirmPassword: "",
   });
@@ -35,6 +37,8 @@ export default function RegisterPage() {
         username: form.username,
         email: form.email,
         full_name: form.full_name,
+        phone_number: form.phone_number || undefined,
+        location: form.location || undefined,
         password: form.password,
       });
       navigate("/");
@@ -94,6 +98,27 @@ export default function RegisterPage() {
                   onChange={(e) => updateField("email", e.target.value)}
                   placeholder="jane@example.com"
                   required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone_number">Phone number</Label>
+                <Input
+                  id="phone_number"
+                  type="tel"
+                  value={form.phone_number}
+                  onChange={(e) => updateField("phone_number", e.target.value)}
+                  placeholder="+1 555 123 4567"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  value={form.location}
+                  onChange={(e) => updateField("location", e.target.value)}
+                  placeholder="New York, NY"
                 />
               </div>
 
