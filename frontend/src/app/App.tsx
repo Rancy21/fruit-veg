@@ -13,6 +13,7 @@ import OrdersPage from "./pages/OrdersPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminProductCreatePage from "./pages/AdminProductCreatePage";
+import AdminProductEditPage from "./pages/AdminProductEditPage";
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
       <Route element={<AdminRoute />}>
         <Route path="/admin/products" element={<AdminProductsPage />} />
         <Route path="/admin/products/new" element={<AdminProductCreatePage />} />
+        <Route path="/admin/products/:id/edit" element={<AdminProductEditPage />} />
       </Route>
 
       <Route path="*" element={<div className="p-10 text-center">Page not found</div>} />

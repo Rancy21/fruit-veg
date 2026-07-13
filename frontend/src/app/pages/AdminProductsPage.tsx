@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../components/ui/button";
 import { Skeleton } from "../components/ui/skeleton";
@@ -120,6 +120,11 @@ export default function AdminProductsPage() {
                     <TableCell>{formatCurrency(product.price)}</TableCell>
                     <TableCell>{product.stock}</TableCell>
                     <TableCell className="text-right">
+                      <Link to={`/admin/products/${product.id}/edit`}>
+                        <Button variant="ghost" size="icon">
+                          <Pencil size={16} />
+                        </Button>
+                      </Link>
                       <Button
                         variant="ghost"
                         size="icon"
