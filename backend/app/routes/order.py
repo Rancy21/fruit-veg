@@ -21,6 +21,7 @@ async def read_order_by_id(db: DBSession, order_id: int, current_user: CurrentUs
     user_name = get_username_by_id(db, db_order.user_id)
 
     return OrderResponse(
+        id=db_order.id,
         user_name=user_name,
         total_price=db_order.total_price,
         status=db_order.status,
@@ -58,6 +59,7 @@ async def register_order(
     user_name = get_username_by_id(db, db_order.user_id)
 
     return OrderResponse(
+        id=db_order.id,
         user_name=user_name,
         total_price=db_order.total_price,
         status=db_order.status,
@@ -72,6 +74,7 @@ async def cancel_order(db: DBSession, order_id: int, current_user: CurrentUser):
     user_name = get_username_by_id(db, db_order.user_id)
 
     return OrderResponse(
+        id=db_order.id,
         user_name=user_name,
         total_price=db_order.total_price,
         status=db_order.status,
@@ -86,6 +89,7 @@ async def complete_order(db: DBSession, order_id: int, current_user: CurrentUser
     user_name = get_username_by_id(db, db_order.user_id)
 
     return OrderResponse(
+        id=db_order.id,
         user_name=user_name,
         total_price=db_order.total_price,
         status=db_order.status,
