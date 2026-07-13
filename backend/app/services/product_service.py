@@ -70,6 +70,38 @@ def create_product(db: Session, product: ProductCreate):
     return db_product
 
 
+def update_product(db: Session, product_id: UUID, product: ProductCreate):
+    db_product = db.query(DBProduct).filter(DBProduct.id == str(product_id)).first()
+
+    if not db_product:
+        raise AppException(
+            f"Product with id: {product_id} not found",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+
+    update_data = {
+        "name": product.name,
+        "category": product.category,
+        "description": product.description,
+        "price": product.price,
+        "stock": product.stock,
+        "calories": product.calories,
+        "carbs": product.carbs,
+        "sugar": product.sugar,
+        "protein": product.protein,
+        "fat": product.fat,
+        "image_url": product.image_url,
+    }
+
+    for key, value in update_data.items():
+        setattr(db_product, key, value)
+
+    db.commit()
+    db.refresh(db_product)
+
+    return db_product
+
+
 def delete_product(db: Session, product_id: UUID):
     db_product = db.query(DBProduct).filter(DBProduct.id == str(product_id)).first()
 

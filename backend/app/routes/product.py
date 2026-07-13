@@ -13,6 +13,7 @@ from ..services.product_service import (
     get_product_by_id,
     get_product_by_name,
     get_products_by_category,
+    update_product,
 )
 from ..services.user_auth import require_role
 from ..utils import UserRole
@@ -65,6 +66,13 @@ async def register_product(
     db: DBSession, product: ProductCreate, current_user: AdminUser
 ):
     return create_product(db, product)
+
+
+@router.put("/{product_id:uuid}", response_model=Product)
+async def update_existing_product(
+    db: DBSession, product_id: UUID, product: ProductCreate, current_user: AdminUser
+):
+    return update_product(db, product_id, product)
 
 
 @router.delete("/{product_id:uuid}")
