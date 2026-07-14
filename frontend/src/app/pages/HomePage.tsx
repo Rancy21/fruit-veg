@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Search, ShoppingBasket, Leaf, ChevronRight, Star, Truck, Shield, RefreshCw, Heart } from "lucide-react";
+import { Search, ShoppingBasket, Leaf, ChevronRight, Star, Truck, Shield, RefreshCw, Heart, Menu } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 import AvatarDropdown from "../components/AvatarDropdown";
+import MobileSidebar from "../components/MobileSidebar";
 
 const HERO_IMG = "https://images.unsplash.com/photo-1557844352-761f2565b576?w=1600&h=900&fit=crop&auto=format";
 const STAND_IMG = "https://images.unsplash.com/photo-1604200657090-ae45994b2451?w=800&h=1000&fit=crop&auto=format";
@@ -109,8 +110,7 @@ export default function HomePage() {
   const { itemCount } = useCart();
   const [activeCategory, setActiveCategory] = useState("All");
   const [wishlist, setWishlist] = useState<number[]>([]);
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const filtered = activeCategory === "All"
     ? products
@@ -127,6 +127,9 @@ export default function HomePage() {
       className="min-h-screen bg-background text-foreground overflow-x-hidden"
       style={{ fontFamily: "'DM Sans', sans-serif" }}
     >
+      {/* Mobile Sidebar */}
+      <MobileSidebar isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4"
         style={{ background: "rgba(11,26,11,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(242,236,224,0.08)" }}
@@ -155,8 +158,6 @@ export default function HomePage() {
           {isAdmin && (
             <Link to="/admin" className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors font-semibold">Admin Dashboard</Link>
           )}
-          <span className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Origins</span>
-          <span className="hidden md:block text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Journal</span>
           {isAuthenticated ? (
             <AvatarDropdown />
           ) : (
@@ -164,6 +165,13 @@ export default function HomePage() {
               Login
             </Link>
           )}
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 rounded-lg hover:bg-accent transition-colors"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <Menu className="h-6 w-6" />
+          </button>
           <Link to="/cart" className="relative">
             <ShoppingBasket size={20} className="text-foreground" />
             {itemCount > 0 && (
@@ -384,55 +392,12 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <button className="self-start flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:scale-105"
+            <Link to="/products" className="self-start flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:scale-105"
               style={{ background: "#e8631a", color: "#fff" }}
             >
-              Meet Our Farmers <ChevronRight size={15} />
-            </button>
+              Shop Now <ChevronRight size={15} />
+            </Link>
           </div>
-        </div>
-      </section>
-
-      {/* NEWSLETTER */}
-      <section className="border-t border-border" style={{ background: "#0d1a0d" }}>
-        <div className="max-w-xl mx-auto px-6 py-16 text-center">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-5"
-            style={{ background: "rgba(240,192,64,0.15)", border: "1px solid rgba(240,192,64,0.25)" }}
-          >
-            <Leaf size={22} style={{ color: "#f0c040" }} />
-          </div>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.8rem", color: "#f2ece0" }} className="mb-2">
-            The Harvest Letter
-          </h2>
-          <p className="text-sm text-muted-foreground mb-7 leading-relaxed">
-            Weekly notes on what's in season, new arrivals from the farms, and recipes from our kitchen.
-          </p>
-          {subscribed ? (
-            <div className="px-6 py-3 rounded-full text-sm font-medium" style={{ background: "rgba(138,171,138,0.15)", color: "#8aab8a", border: "1px solid rgba(138,171,138,0.25)" }}>
-              You're on the list — welcome to the harvest.
-            </div>
-          ) : (
-            <form
-              className="flex gap-2"
-              onSubmit={(e) => { e.preventDefault(); if (email) setSubscribed(true); }}
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="flex-1 px-4 py-3 rounded-full text-sm outline-none text-foreground placeholder-muted-foreground"
-                style={{ background: "#1e381e", border: "1px solid rgba(242,236,224,0.12)" }}
-              />
-              <button
-                type="submit"
-                className="px-5 py-3 rounded-full text-sm font-semibold transition-all hover:scale-105"
-                style={{ background: "#e8631a", color: "#fff" }}
-              >
-                Subscribe
-              </button>
-            </form>
-          )}
         </div>
       </section>
 
