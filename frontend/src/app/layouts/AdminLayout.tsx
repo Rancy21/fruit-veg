@@ -1,16 +1,8 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router'
 import { useTheme } from 'next-themes'
-import { useAuth } from '../../contexts/AuthContext'
-import { Button } from '@/app/components/ui/button'
-import { Avatar, AvatarFallback } from '@/app/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/app/components/ui/dropdown-menu'
+import { Button } from '../components/ui/button'
+import AdminAvatarDropdown from '../components/AdminAvatarDropdown'
 import {
   LayoutDashboard,
   Package,
@@ -20,10 +12,8 @@ import {
   X,
   Sun,
   Moon,
-  LogOut,
-  ChevronDown,
 } from 'lucide-react'
-import { cn } from '@/app/lib/utils'
+import { cn } from '../lib/utils'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, exact: true },
@@ -35,7 +25,6 @@ const navigation = [
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { theme, setTheme } = useTheme()
-  const { user, logout } = useAuth()
 
   return (
     <div className="min-h-screen bg-background">
@@ -120,30 +109,7 @@ export default function AdminLayout() {
             </Button>
 
             {/* User menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>
-                      {user?.full_name?.charAt(0) || user?.username?.charAt(0) || 'A'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="hidden md:inline-block">{user?.full_name || user?.username}</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="px-2 py-1.5">
-                  <p className="text-sm font-medium">{user?.full_name}</p>
-                  <p className="text-xs text-muted-foreground">{user?.email}</p>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <AdminAvatarDropdown />
           </div>
         </header>
 
