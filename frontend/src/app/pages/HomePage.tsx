@@ -1,102 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
-import { Search, ShoppingBasket, Leaf, ChevronRight, Star, Truck, Shield, RefreshCw, Heart, Menu } from "lucide-react";
+import { Search, ShoppingBasket, Leaf, ChevronRight, Star, Truck, Shield, RefreshCw, Heart, Menu, Loader2 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 import AvatarDropdown from "../components/AvatarDropdown";
 import MobileSidebar from "../components/MobileSidebar";
+import { getProducts } from "../../api/products";
+import type { Product } from "../types/api";
 
 const HERO_IMG = "https://images.unsplash.com/photo-1557844352-761f2565b576?w=1600&h=900&fit=crop&auto=format";
 const STAND_IMG = "https://images.unsplash.com/photo-1604200657090-ae45994b2451?w=800&h=1000&fit=crop&auto=format";
 
-const products = [
-  {
-    id: 1,
-    name: "Alphonso Mangoes",
-    origin: "Ratnagiri, India",
-    price: "₹240",
-    unit: "per kg",
-    tag: "Seasonal",
-    rating: 4.9,
-    reviews: 312,
-    category: "Fruits",
-    img: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&h=600&fit=crop&auto=format",
-    color: "#f0c040",
-    wishlisted: false,
-  },
-  {
-    id: 2,
-    name: "Heirloom Tomatoes",
-    origin: "Tuscany, Italy",
-    price: "₹180",
-    unit: "per 500g",
-    tag: "Organic",
-    rating: 4.7,
-    reviews: 218,
-    category: "Vegetables",
-    img: "https://images.unsplash.com/photo-1485637701894-09ad422f6de6?w=600&h=600&fit=crop&auto=format",
-    color: "#e8631a",
-    wishlisted: false,
-  },
-  {
-    id: 3,
-    name: "Puy Lentils",
-    origin: "Le Puy, France",
-    price: "₹320",
-    unit: "per kg",
-    tag: "Heritage",
-    rating: 4.8,
-    reviews: 145,
-    category: "Legumes",
-    img: "https://images.unsplash.com/photo-1612257416648-ee7a6c533b4f?w=600&h=600&fit=crop&auto=format",
-    color: "#8aab8a",
-    wishlisted: false,
-  },
-  {
-    id: 4,
-    name: "Blood Oranges",
-    origin: "Sicily, Italy",
-    price: "₹290",
-    unit: "per 6 pcs",
-    tag: "Limited",
-    rating: 4.9,
-    reviews: 97,
-    category: "Fruits",
-    img: "https://images.unsplash.com/photo-1608679627228-a8393e0f3fa5?w=600&h=600&fit=crop&auto=format",
-    color: "#c84030",
-    wishlisted: false,
-  },
-  {
-    id: 5,
-    name: "Borlotti Beans",
-    origin: "Veneto, Italy",
-    price: "₹260",
-    unit: "per kg",
-    tag: "Artisan",
-    rating: 4.6,
-    reviews: 83,
-    category: "Legumes",
-    img: "https://images.unsplash.com/photo-1728931339661-1ea66004a2e6?w=600&h=600&fit=crop&auto=format",
-    color: "#d4846a",
-    wishlisted: false,
-  },
-  {
-    id: 6,
-    name: "Medjool Dates",
-    origin: "Jordan Valley",
-    price: "₹480",
-    unit: "per 250g",
-    tag: "Premium",
-    rating: 5.0,
-    reviews: 201,
-    category: "Fruits",
-    img: "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=600&h=600&fit=crop&auto=format",
-    color: "#b87040",
-    wishlisted: false,
-  },
-];
-
-const categories = ["All", "Fruits", "Legumes", "Vegetables", "Seasonal"];
+const categories = ["All", "fruit", "legume", "vegetable"];
 
 const features = [
   { icon: Truck, label: "Farm-Direct Delivery", sub: "Next-day to your door" },
@@ -111,6 +26,26 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await getProducts(0, 8); // Fetch first 8 products for homepage
+        setProducts(data);
+      } catch (err) {
+        console.error('Failed to fetch products:', err);
+        setError('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const filtered = activeCategory === "All"
     ? products
@@ -292,74 +227,91 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((product) => (
-            <div
-              key={product.id}
-              className="group rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
-              style={{ background: "#122212", border: "1px solid rgba(242,236,224,0.08)" }}
-            >
-              <div className="relative overflow-hidden" style={{ height: 220, background: "#0d1a0d" }}>
-                <img
-                  src={product.img}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
-                  style={{ transform: "scale(1.01)" }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-
-                {/* Tag */}
-                <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide"
-                  style={{ background: product.color + "22", color: product.color, border: `1px solid ${product.color}44` }}
-                >
-                  {product.tag}
-                </span>
-
-                {/* Wishlist */}
-                <button
-                  className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110"
-                  style={{ background: "rgba(11,26,11,0.7)", backdropFilter: "blur(6px)" }}
-                  onClick={() => toggleWishlist(product.id)}
-                >
-                  <Heart
-                    size={15}
-                    style={{
-                      color: wishlist.includes(product.id) ? "#e8631a" : "#f2ece0",
-                      fill: wishlist.includes(product.id) ? "#e8631a" : "none",
-                    }}
-                  />
-                </button>
-              </div>
-
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-1">
-                  <div>
-                    <h3 className="font-semibold text-foreground" style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.05rem" }}>
-                      {product.name}
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">{product.origin}</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-bold text-foreground" style={{ fontSize: "1.1rem" }}>{product.price}</span>
-                    <p className="text-xs text-muted-foreground">{product.unit}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1 mb-4 mt-2">
-                  <Star size={12} fill="#f0c040" color="#f0c040" />
-                  <span className="text-xs font-medium text-foreground">{product.rating}</span>
-                  <span className="text-xs text-muted-foreground">({product.reviews})</span>
-                </div>
-
-                <Link
-                  to="/products"
-                  className="block w-full py-2 rounded-xl text-sm font-semibold text-center transition-all hover:opacity-90 active:scale-95"
-                  style={{ background: "rgba(232,99,26,0.15)", color: "#e8631a", border: "1px solid rgba(232,99,26,0.25)" }}
-                >
-                  View Products
-                </Link>
-              </div>
+          {loading ? (
+            <div className="col-span-full flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <span className="ml-2 text-muted-foreground">Loading products...</span>
             </div>
-          ))}
+          ) : error ? (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground">{error}</p>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground">No products found</p>
+            </div>
+          ) : (
+            filtered.map((product) => (
+              <div
+                key={product.id}
+                className="group rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                style={{ background: "#122212", border: "1px solid rgba(242,236,224,0.08)" }}
+              >
+                <div className="relative overflow-hidden" style={{ height: 220, background: "#0d1a0d" }}>
+                  <img
+                    src={product.image_url || "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&h=600&fit=crop&auto=format"}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
+                    style={{ transform: "scale(1.01)" }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+
+                  {/* Tag */}
+                  <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide"
+                    style={{ background: "rgba(232,99,26,0.15)", color: "#e8631a", border: "1px solid rgba(232,99,26,0.25)" }}
+                  >
+                    {product.category}
+                  </span>
+
+                  {/* Wishlist */}
+                  <button
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110"
+                    style={{ background: "rgba(11,26,11,0.7)", backdropFilter: "blur(6px)" }}
+                    onClick={() => toggleWishlist(parseInt(product.id))}
+                  >
+                    <Heart
+                      size={15}
+                      style={{
+                        color: wishlist.includes(parseInt(product.id)) ? "#e8631a" : "#f2ece0",
+                        fill: wishlist.includes(parseInt(product.id)) ? "#e8631a" : "none",
+                      }}
+                    />
+                  </button>
+                </div>
+
+                <div className="p-4">
+                  <div className="flex items-start justify-between mb-1">
+                    <div>
+                      <h3 className="font-semibold text-foreground" style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.05rem" }}>
+                        {product.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate" style={{ maxWidth: "150px" }}>
+                        {product.description}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-bold text-foreground" style={{ fontSize: "1.1rem" }}>${product.price.toFixed(2)}</span>
+                      <p className="text-xs text-muted-foreground">Stock: {product.stock}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1 mb-4 mt-2">
+                    <Star size={12} fill="#f0c040" color="#f0c040" />
+                    <span className="text-xs font-medium text-foreground">4.8</span>
+                    <span className="text-xs text-muted-foreground">(Premium Quality)</span>
+                  </div>
+
+                  <Link
+                    to={`/products/${product.id}`}
+                    className="block w-full py-2 rounded-xl text-sm font-semibold text-center transition-all hover:opacity-90 active:scale-95"
+                    style={{ background: "rgba(232,99,26,0.15)", color: "#e8631a", border: "1px solid rgba(232,99,26,0.25)" }}
+                  >
+                    View Details
+                  </Link>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </section>
 
