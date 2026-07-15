@@ -11,7 +11,7 @@ from .routes import search
 
 from .database import Base, engine
 from .exceptions import AppException
-from .routes import admin, auth, order, product
+from .routes import admin, auth, order, product, payment
 from .routes.auth import DBSession
 from .schemas import OrderResponse, PasswordChange, User, UserUpdate
 from .services.order_service import list_orders_by_user
@@ -36,6 +36,7 @@ app.include_router(product.router)
 app.include_router(order.router)
 app.include_router(search.router)
 app.include_router(admin.router)
+app.include_router(payment.router)
 
 
 @app.get("/")

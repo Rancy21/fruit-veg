@@ -106,5 +106,71 @@ class OrderItem(BaseModel):
     quantity: Decimal
     price_at_purchase: Decimal
 
+
 class SearchRequest(BaseModel):
     query:str
+
+
+# Payment Schemas
+class PaymentStatus(str):
+    """Payment status enum for API responses"""
+    PENDING = "pending"
+    PROCESSING = "processing"
+    SUCCESSFUL = "successful"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+
+class InitiatePaymentRequest(BaseModel):
+    """Request to initiate a payment"""
+    order_id: int
+    email: str
+    first_name: str
+    last_name: str
+    phone: str
+    card_number: str
+    exp_month: str
+    exp_year: str
+    cvv: str
+    currency: Optional[str] = "USD"
+
+
+class InitiatePaymentResponse(BaseModel):
+    """Response after initiating a payment"""
+    payment_id: uuid.UUID
+    reference: str
+    status: str
+    amount: Decimal
+    currency: str
+    redirect_url: Optional[str] = None
+    message: Optional[str] = None
+
+
+class PaymentStatusResponse(BaseModel):
+    """Payment status response"""
+    id: uuid.UUID
+    order_id: int
+    amount: Decimal
+    currency: str
+    status: str
+    reference: str
+    flutterwave_charge_id: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class CardDetails(BaseModel):
+    """Card details for payment"""
+    card_number: str
+    exp_month: str
+    exp_year: str
+    cvv: str
+
+
+class WebhookPayload(BaseModel):
+    """Flutterwave webhook payload"""
+    event: str
+    data: dict

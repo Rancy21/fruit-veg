@@ -12,6 +12,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import OrdersPage from "./pages/OrdersPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import PaymentCallbackPage from "./pages/PaymentCallbackPage";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
@@ -34,8 +35,9 @@ export default function App() {
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/orders/:id" element={<OrderDetailPage />} />
         <Route path="/profile" element={<UserProfilePage />} />
-        {/* User-only routes will be added here */}
       </Route>
+
+      <Route path="/payment/callback" element={<PaymentCallbackPage />} />
 
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminLayout />}>
