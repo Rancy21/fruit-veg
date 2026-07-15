@@ -39,7 +39,7 @@
 
 ## Overview
 
-**Verdura** is a production-ready e-commerce platform specialized for selling fresh fruits and vegetables online. Built with modern technologies, it provides a seamless shopping experience for customers and powerful management tools for administrators.
+**Verdura** is an e-commerce platform specialized for selling fresh fruits and vegetables online. Built with modern technologies, it provides a seamless shopping experience for customers and powerful management tools for administrators.
 
 ### Problem It Solves
 
