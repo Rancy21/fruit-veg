@@ -6,7 +6,7 @@ import { useCart } from "../../contexts/CartContext";
 import AvatarDropdown from "../components/AvatarDropdown";
 import MobileSidebar from "../components/MobileSidebar";
 import { getProducts } from "../../api/products";
-import type { Product } from "../types/api";
+import type { Product } from "../../types/api";
 
 const HERO_IMG = "https://images.unsplash.com/photo-1557844352-761f2565b576?w=1600&h=900&fit=crop&auto=format";
 const STAND_IMG = "https://images.unsplash.com/photo-1604200657090-ae45994b2451?w=800&h=1000&fit=crop&auto=format";
