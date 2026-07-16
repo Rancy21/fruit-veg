@@ -1,5 +1,6 @@
 import logging
 import traceback
+import os
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Request
@@ -20,7 +21,7 @@ from .services.user_auth import require_role
 from .utils import UserRole, UUIDConvertor
 
 app = FastAPI(title="Fruit-Veg Shop", version="1.0.0")
-
+frontend_url = os.getenv("FRONTEND_BASE_URL")
 logger = logging.getLogger("uvicorn.error")
 
 Base.metadata.create_all(bind=engine)
@@ -29,7 +30,7 @@ CurrentUser = Annotated[User, Depends(require_role([UserRole.USER]))]
 
 register_url_convertor("uuid", UUIDConvertor())
 
-app.add_middleware(cors.CORSMiddleware, allow_origins=["http://localhost:5173"], allow_credentials=True, allow_headers=["*"], allow_methods=["*"])
+app.add_middleware(cors.CORSMiddleware, allow_origins=[f"{frontend_url}"], allow_credentials=True, allow_headers=["*"], allow_methods=["*"])
 
 app.include_router(auth.router)
 app.include_router(product.router)
