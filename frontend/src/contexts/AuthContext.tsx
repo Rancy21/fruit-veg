@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = useMemo(() => !!user, [user]);
 
   const isAdmin = useMemo(
-    () => user?.roles.some((role) => role.name === "admin") ?? false,
+    () => user?.roles?.some((role) => role.name === "admin") ?? false,
     [user]
   );
 

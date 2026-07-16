@@ -35,10 +35,12 @@ export default function HomePage() {
       try {
         setLoading(true);
         const data = await getProducts(0, 8); // Fetch first 8 products for homepage
-        setProducts(data);
+        // Ensure data is an array
+        setProducts(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Failed to fetch products:', err);
         setError('Failed to load products');
+        setProducts([]); // Set to empty array on error
       } finally {
         setLoading(false);
       }
